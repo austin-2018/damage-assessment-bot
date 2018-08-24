@@ -28,8 +28,11 @@ To start with the debugger, open the VS Code debugger panel (Ctrl + Shift + D), 
 
 If the debugger is not needed, running the app from the command line can be somewhat faster. For this, `cd` into the 'api' folder and run `npm run start:dev`.
 
+**Note:** The api's development server does not automatically react to source code changes, unlike the web UI server. If code is changed, you must stop the server, rebuild the code, and then start the server again.
+
 ## Running the web app
 
+Building and running the web UI project is as simple as `cd`'ing into the 'web' folder and running `npm run dev`. This will build the project, start the server, and open up the landing page in your default browser. Unlike the 'api' project, it is not necessary to stop the development server when making source code changes. The web dev server will automatically detect changes to files in 'web/src', rebuild, and update the live web page to use the updated code (without even refreshing the web page - application state is preserved!).
 
 ## Testing with Facebook app
 
