@@ -1,6 +1,15 @@
 <template>
   <div>
     {{msg}}!!
+    <div>
+      <a href='https://www.facebook.com/v3.1/dialog/oauth?
+                  client_id=228491981184194&
+                  redirect_uri=https://maxtestfacebookapp.azurewebsites.net&
+                  state="{st=state123abc,ds=123456789}"&
+                  scope=groups_access_member_info'>
+        Sign in to Facebook
+      </a>
+    </div>
   </div>
 </template>
 
