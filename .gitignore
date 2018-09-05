@@ -66,3 +66,4 @@ local.settings.json
 # built output directories
 bin/
 dist/
+built/

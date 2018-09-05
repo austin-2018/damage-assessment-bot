@@ -32,9 +32,23 @@ If the debugger is not needed, running the app from the command line can be some
 
 ## Running the web app
 
-Building and running the web UI project is as simple as `cd`'ing into the 'web' folder and running `npm run dev`. This will build the project, start the server, and open up the landing page in your default browser. Unlike the 'api' project, it is not necessary to stop the development server when making source code changes. The web dev server will automatically detect changes to files in 'web/src', rebuild, and update the live web page to use the updated code (without even refreshing the web page - application state is preserved!).
+Building and running the web UI project is as simple as `cd`'ing into the 'web' folder and running `npm run dev`. This will build the project, start the server, and open up the landing page in your default browser. Unlike the 'api' project, it is not necessary to stop the development server when making source code changes. The web dev server will automatically detect changes to files in 'web/src', rebuild, and update the live web page to use the updated code (via hot module replacement - no page refresh needed, application state is preserved!).
 
-## Testing with Facebook app
+## Testing the chat bot
+
+### Chatting using the Bot Framework Emulator
+
+The fastest and easiest way to get started talking to your bot and testing it is to install Microsoft's [Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator). Direct download link for the installer is available [here](https://github.com/Microsoft/BotFramework-Emulator/releases/download/v3.5.35/botframework-emulator-Setup-3.5.35.exe). This installs the emulator for BotFramework v3.3.35. Note that a version of the emulator is available for v4 of the bot framework, but since this is still in preview we are using the latest available v3 emulator.
+
+### 
+
+## Testing with a Facebook app
+
+## Add registration creden
+
+https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-facebook?view=azure-bot-service-3.0
+
+To test agains
 
 ### Create Facebook app and bot registration service
 

@@ -6,7 +6,8 @@
                   client_id=228491981184194&
                   redirect_uri=https://maxtestfacebookapp.azurewebsites.net&
                   state="{st=state123abc,ds=123456789}"&
-                  scope=groups_access_member_info'>
+                  scope=groups_access_member_info&
+                  response_type=token granted_scopes'>
         Sign in to Facebook
       </a>
     </div>
