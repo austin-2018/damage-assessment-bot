@@ -2,7 +2,8 @@
     "IsEncrypted": false,
     "Values": {
       "MicrosoftAppId": "",
-      "MicrosoftAppPassword": ""
+      "MicrosoftAppPassword": "",
+      "NODE_TLS_REJECT_UNAUTHORIZED": "0"
     },
     "Host": {
       "LocalHttpPort": 7071,

@@ -1,19 +1,16 @@
 {
   "bindings": [
     {
-      "type": "httpTrigger",
-      "route": "messages/chat-login",
-      "methods": [
-        "post"
-      ],
       "authLevel": "function",
+      "route": "chat/messages",
+      "type": "httpTrigger",
       "direction": "in",
       "name": "req"
     },
     {
       "type": "http",
       "direction": "out",
-      "name": "$return"
+      "name": "res"
     }
   ],
   "disabled": false

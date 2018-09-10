@@ -1,15 +1,19 @@
 {
   "bindings": [
     {
-      "authLevel": "function",
       "type": "httpTrigger",
+      "route": "chat/registration",
+      "methods": [
+        "post"
+      ],
+      "authLevel": "function",
       "direction": "in",
       "name": "req"
     },
     {
       "type": "http",
       "direction": "out",
-      "name": "res"
+      "name": "$return"
     }
   ],
   "disabled": false
