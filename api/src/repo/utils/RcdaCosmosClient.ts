@@ -15,19 +15,15 @@ export default class RcdaCosmosClient extends CosmosClient {
         });
     }
 
-    private static _instance: Promise<RcdaCosmosClient>;
-    public static async getInstance(): Promise<RcdaCosmosClient> {
-        if (!this._instance) {
-            this._instance = new Promise<RcdaCosmosClient>(async (resolve) => {
-                let instance = new RcdaCosmosClient();
-                await instance.databases.createIfNotExists({ id: this.databaseId });
-                resolve(instance);
-            });
-        }
-        return await this._instance;
+    public static getInstance(): RcdaCosmosClient {
+        return new RcdaCosmosClient();
     }
 
     public get chatAddresses(): Container {
         return this.database(RcdaCosmosClient.databaseId).container("ChatAddresses");
+    }
+
+    public get users(): Container {
+        return this.database(RcdaCosmosClient.databaseId).container("Users");
     }
 }

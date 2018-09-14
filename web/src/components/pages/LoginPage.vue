@@ -4,11 +4,15 @@
       <form>
         <label>
           Username:
-          <input type="text" v-model="userEmail"/>
-          <template v-if="attemptedLogin && !isValid">Username is invalid</template>
+          <input type="text" v-model="username"/>
         </label>
-        <p>{{userEmail}}</p>
-        <button @click="logIn">Submit</button>
+        <label>
+          Password:
+          <input type="password" v-model="password"/>
+        </label>
+        <p v-if="attemptedLogin && !isValid">Username or password are empty</p>
+        <p>{{username}} {{password}}</p>
+        <button @click="submitLogin">Submit</button>
       </form>
     </div>
 </template>
@@ -21,17 +25,22 @@ import AuthService from "@/services/AuthService";
 @Component
 export default class LoginPage extends Vue {
 
-  public userEmail = "";
+  public username = "";
+  public password = "";
   public attemptedLogin = false;
 
   get isValid() {
-    return !!this.userEmail;
+    return !!this.username && !!this.password;
   }
 
-  public logIn() {
+  public async submitLogin() {
     this.attemptedLogin = true;
     if (this.isValid) {
-      alert(this.userEmail);
+      await this.authService.logIn(this.username, this.password);
+      if (this.authService.hasActiveSession) {
+        let nextPage = this.$router.currentRoute.redirectedFrom || '/';
+        this.$router.replace(nextPage);
+      }
     }
   }
 

@@ -1,24 +1,32 @@
-import { IAddress } from "botbuilder";
-import RcdaCosmosClient from "@/repo/RcdaCosmosClient";
+import RcdaCosmosClient from "@/repo/utils/RcdaCosmosClient";
+import UserModel from "@common/models/user/UserModel";
 
 export default class UserRepo {
 
-    constructor(rcdaCosmosClient: RcdaCosmosClient) {
-        this.cosmosClient = rcdaCosmosClient;
+    constructor(private cosmosClient: RcdaCosmosClient) {}
+
+    public static getInstance(): UserRepo {
+        return new UserRepo(RcdaCosmosClient.getInstance());
     }
 
-    public static async getInstance(): Promise<UserRepo> {
-        return new UserRepo(await RcdaCosmosClient.getInstance());
+    async add(user: UserModel): Promise<UserModel> {
+        try {
+            let response = await this.cosmosClient.users.items.create(user);
+            return response.body;
+        }
+        catch (ex) {
+            throw ex;
+        }
     }
 
-    private cosmosClient: RcdaCosmosClient;
-
-    async save(id: string): Promise<void> {
-        await this.cosmosClient.chatAddresses.items.upsert({ id });
-    }
-
-    async get(id: string): Promise<any> {
-        let result = await this.cosmosClient.chatAddresses.item(id).read();
-        return result.body;
+    async get(id: string): Promise<UserModel> {
+        try {
+            let result = await this.cosmosClient.users.item(id).read();
+            return result.body;
+        }
+        catch (ex) {
+            //TODO check error
+            return null;
+        }
     }
 }

@@ -1,15 +1,14 @@
 import axios from "axios";
-import { Component } from "vue-property-decorator";
-import Vue from "vue";
+import ChatRegistrationRequest from "@common/models/chat-registration/ChatRegistrationRequest";
 
-export default function ChatService() {
+export default class ChatService {
 
-    let urlParams = new URLSearchParams(window.location.search);
-    let accessToken = urlParams.get("access_token");
-
-    if (accessToken) {
-        axios.post("api/userSignIn", {
-
-        });
+    public async registerChannel(registrationToken: string): Promise<void> {
+        let request: ChatRegistrationRequest = {
+            registrationToken
+        };
+        //TODO bearer
+        let headers = { "Authorization": localStorage.getItem("sessionToken") }
+        let response = await axios.post("api/chat/registration", request, { headers });
     }
 }

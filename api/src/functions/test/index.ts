@@ -1,22 +1,16 @@
-import { Context, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from "azure-functions-ts-essentials";
-import TestService from "@/services/TestService";
+import { HttpStatusCode } from "azure-functions-ts-essentials";
+import rcdaHttpFunction from "@/function-utils/rcdaHttpFunction";
+import UserSession from "@common/models/user/UserSession";
 
-// since this is an exported module object, these factory methods can be reassigned for mocking/test purposes
-export const dependencies: { testService(): TestService } = {
-  testService: () => TestService.create()
-};
+class TestRequestDependencies { }
 
-export function run(context: Context, req: HttpRequest): void {
-  let res: HttpResponse;
+export default rcdaHttpFunction<null, UserSession, TestRequestDependencies>(
+  TestRequestDependencies,
+  true,
+  async (req, _, { session }) => {
 
-  let testService: TestService = dependencies.testService();
-
-  testService.getMessage();
-
-  res = {
-    status: HttpStatusCode.OK,
-    body: testService.getMessage()
-  };
-
-  context.done(undefined, res);
-}
+    return { 
+      status: HttpStatusCode.OK,
+      body: session
+    };
+  });
