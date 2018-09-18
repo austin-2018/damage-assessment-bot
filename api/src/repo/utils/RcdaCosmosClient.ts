@@ -1,4 +1,11 @@
-import { CosmosClient, Container } from "@azure/cosmos";
+import { CosmosClient, Container, Database } from "@azure/cosmos";
+
+export const RcdaDatabaseId = "Rcda";
+
+export const enum RcdaContainers {
+    ChatRegistrations = "ChatRegistrations",
+    Users = "Users"
+}
 
 export default class RcdaCosmosClient extends CosmosClient {
     
@@ -20,10 +27,10 @@ export default class RcdaCosmosClient extends CosmosClient {
     }
 
     public get chatAddresses(): Container {
-        return this.database(RcdaCosmosClient.databaseId).container("ChatAddresses");
+        return this.database(RcdaCosmosClient.databaseId).container(RcdaContainers.ChatRegistrations);
     }
 
     public get users(): Container {
-        return this.database(RcdaCosmosClient.databaseId).container("Users");
+        return this.database(RcdaDatabaseId).container(RcdaContainers.Users);
     }
 }

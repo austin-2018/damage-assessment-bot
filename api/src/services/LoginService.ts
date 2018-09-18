@@ -3,6 +3,7 @@ import LoginResponse from "@common/models/login/LoginResponse";
 import LoginRequest from "@common/models/login/LoginRequest";
 import UserRepo from "@/repo/UserRepo";
 import UserSession from "@common/models/user/UserSession";
+import RcdaClientError from "@/common/errors/RcdaClientError";
 
 export default class LoginService {
     constructor(
@@ -17,14 +18,14 @@ export default class LoginService {
 
     public async login(loginRequest: LoginRequest): Promise<LoginResponse> {
         if (!await this.loginRepo.verifyLogin(loginRequest)) {
-            throw Error();//TODO
+            throw new RcdaClientError("The provided authentication credentials are invalid");
         }
 
         //TODO use user id as it is stored in the auth response
         let userId = loginRequest.username.toLowerCase();
         let user = await this.userRepo.get(userId);
         if (!user) {
-            user = await this.userRepo.add({ id: userId });
+            user = await this.userRepo.add({ id: userId, roles: [], chatChannels: {} });
         }
 
         return {

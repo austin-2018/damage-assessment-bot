@@ -3,36 +3,29 @@ import { sign, SignOptions, Secret, VerifyOptions, verify } from "jsonwebtoken";
 import LoginRequest from "@common/models/login/LoginRequest";
 import UserModel from "@common/models/user/UserModel";
 import UserSession from "@common/models/user/UserSession";
-import RcdaCosmosClient from "@/repo//utils/RcdaCosmosClient";
-
-type RcdaJsonWebToken = {
-    sign(
-        payload: string | Buffer | object,
-        secretOrPrivateKey: Secret,
-        options?: SignOptions,
-    ): string;
-    verify(
-        token: string,
-        secretOrPublicKey: string | Buffer,
-        options?: VerifyOptions,
-    ): object | string;
-}
+import RcdaCosmosClient from "@/repo/utils/RcdaCosmosClient";
 
 export default class LoginRepo {
     constructor(
         private cosmosClient: RcdaCosmosClient,
         private axios: AxiosInstance, 
-        private jwt: RcdaJsonWebToken) {}
+        private jwt: { sign: typeof sign, verify: typeof verify }) {}
 
     static getInstance() {
         return new LoginRepo(RcdaCosmosClient.getInstance(), axios, { sign, verify });
     }
 
     public async verifyLogin(loginCredentials: {username: string, password: string}): Promise<boolean> {
-        if (loginCredentials.username === "testuser") {
-            return true;
+        try {
+            let result = await this.axios.post<{id: string, expires: string}>("https://dsgocdnapi.azureedge.net/get_auth_token", {
+                username: loginCredentials.username,
+                password: loginCredentials.password
+            });
+            return result.status >= 200 && result.status < 300;
         }
-        return false;
+        catch {
+            return false;
+        }
     }
 
     static jwtSignature = "54376454frwcbyx6c4wgurwj";
@@ -43,10 +36,12 @@ export default class LoginRepo {
 
     public async parseSessionToken(token: string): Promise<UserSession> {
         try {
-            return this.jwt.verify(token, LoginRepo.jwtSignature);
+           let session = <UserSession>this.jwt.verify(token, LoginRepo.jwtSignature);
+           return session;
         }
         catch {
-            null;
+            //TODO verify
+            return null;
         }
     }
 }

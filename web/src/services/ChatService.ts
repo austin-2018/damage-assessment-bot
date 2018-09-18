@@ -7,8 +7,8 @@ export default class ChatService {
         let request: ChatRegistrationRequest = {
             registrationToken
         };
-        //TODO bearer
-        let headers = { "Authorization": localStorage.getItem("sessionToken") }
+        let sessionToken = localStorage.getItem("sessionToken");
+        let headers = { "Authorization": `Bearer ${sessionToken}` };
         let response = await axios.post("api/chat/registration", request, { headers });
     }
 }

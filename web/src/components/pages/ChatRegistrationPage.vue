@@ -28,6 +28,9 @@ import ChatService from "@/services/ChatService";
 @Component
 export default class ChatRegistrationPage extends Vue {
 
+  @Inject()
+  private chatService!: ChatService;
+
   public registrationToken = "";
   public attemptedLogin = false;
   public confirmed = false;
@@ -43,8 +46,5 @@ export default class ChatRegistrationPage extends Vue {
       this.confirmed = true;
     }
   }
-
-  @Inject()
-  private chatService!: ChatService;
 }
 </script>
