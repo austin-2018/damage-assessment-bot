@@ -40,7 +40,6 @@ export default class LoginRepo {
            return session;
         }
         catch {
-            //TODO verify
             return null;
         }
     }

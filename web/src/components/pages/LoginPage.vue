@@ -25,6 +25,9 @@ import AuthService from "@/services/AuthService";
 @Component
 export default class LoginPage extends Vue {
 
+  @Inject()
+  private authService!: AuthService;
+
   public username = "";
   public password = "";
   public attemptedLogin = false;
@@ -37,14 +40,8 @@ export default class LoginPage extends Vue {
     this.attemptedLogin = true;
     if (this.isValid) {
       await this.authService.logIn(this.username, this.password);
-      if (this.authService.hasActiveSession) {
-        let nextPage = this.$router.currentRoute.redirectedFrom || '/';
-        this.$router.replace(nextPage);
-      }
+      this.$router.replace(this.$route.query.redirect || '/');
     }
   }
-
-  @Inject()
-  private authService!: AuthService;
 }
 </script>

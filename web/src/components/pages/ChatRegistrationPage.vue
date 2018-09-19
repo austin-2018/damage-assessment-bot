@@ -15,7 +15,6 @@
       <template v-else> 
         <h1>Registration confirmed!</h1>
         <p>Thanks for registering! You may now return to your chat conversation.</p>
-        <p>TODO: buttons for close page and go to dashboard</p>
       </template>
     </div>
 </template>

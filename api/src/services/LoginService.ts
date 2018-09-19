@@ -22,7 +22,7 @@ export default class LoginService {
         }
 
         //TODO use user id as it is stored in the auth response
-        let userId = loginRequest.username.toLowerCase();
+        let userId = loginRequest.username;
         let user = await this.userRepo.get(userId);
         if (!user) {
             user = await this.userRepo.add({ id: userId, roles: [], chatChannels: {} });

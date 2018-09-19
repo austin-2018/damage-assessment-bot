@@ -21,7 +21,13 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
         // Authenticate, if required
         if (authentication) {
             let loginService = LoginService.getInstance();
-            let sessionToken: string = (req.headers.authorization || "").slice("Bearer ".length);
+            if (!req.headers.authorization || ! req.headers.authorization.toLowerCase().startsWith("bearer ")) {
+                return {
+                    status: HttpStatusCode.Unauthorized,
+                    body: null
+                }
+            }
+            let sessionToken = req.headers.authorization.slice("bearer ".length);
             session = await loginService.verify(sessionToken);
             if (!session) {
                 return {
@@ -30,7 +36,7 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
                 }
             }
             //TODO further verification of user session, roles, etc
-            else if (session.roles) {
+            else if (false) {
                 return {
                     status: HttpStatusCode.Forbidden,
                     body: null
