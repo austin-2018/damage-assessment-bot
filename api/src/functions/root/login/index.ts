@@ -1,5 +1,5 @@
 import { HttpStatusCode } from "azure-functions-ts-essentials";
-import rcdaHttpFunction from "@/function-utils/rcdaHttpFunction";
+import rcdaHttpFunction from "@/functions/utils/rcdaHttpFunction";
 import LoginService from "@/services/LoginService";
 import LoginRequest from "@common/models/login/LoginRequest";
 import LoginResponse from "@common/models/login/LoginResponse";

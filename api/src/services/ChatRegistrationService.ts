@@ -1,6 +1,6 @@
 import ChatRegistrationRepo from "repo/ChatRegistrationRepo";
 import ChatRegistrationRequest from "@common/models/chat-registration/ChatRegistrationRequest";
-import RcdaClientError from "common/errors/RcdaClientError";
+import RcdaClientError from "@common/errors/RcdaClientError";
 import UserSession from "@common/models/user/UserSession";
 import UserRepo from "@/repo/UserRepo";
 
@@ -32,6 +32,6 @@ export default class ChatRegistrationService {
         await this.userRepo.update(user);
 
         // try to message user (not a success precondition, fire and forget)
-
+        // TODO
     }
 }

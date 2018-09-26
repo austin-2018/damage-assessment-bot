@@ -1,6 +1,6 @@
 import { SuggestedActions, CardAction, Message } from "botbuilder";
 import ChatRegistrationRepo from "@/repo/ChatRegistrationRepo";
-import UserRepo from "repo/UserRepo";
+import UserRepo from "@/repo/UserRepo";
 import rcdaChatDialog from "@/chat/utils/rcdaChatDialog";
 
 export default rcdaChatDialog(

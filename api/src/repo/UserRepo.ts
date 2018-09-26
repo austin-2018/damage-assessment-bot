@@ -1,6 +1,6 @@
 import RcdaCosmosClient, { RcdaContainers } from "@/repo/utils/RcdaCosmosClient";
 import UserModel from "@common/models/user/UserModel";
-import RcdaSystemError from "@/common/errors/RcdaSystemError";
+import RcdaSystemError from "@common/errors/RcdaSystemError";
 
 export default class UserRepo {
 

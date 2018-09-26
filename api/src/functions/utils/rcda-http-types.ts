@@ -1,5 +1,5 @@
 import { Context, HttpRequest, HttpResponse, HttpStatusCode } from "azure-functions-ts-essentials";
-import RcdaHttpHeaders from "@/function-utils/RcdaHttpHeaders";
+import RcdaHttpHeaders from "@/functions/utils/RcdaHttpHeaders";
 import UserSession from "@common/models/user/UserSession";
 
 export interface RcdaHttpRequest<TBody> extends HttpRequest {

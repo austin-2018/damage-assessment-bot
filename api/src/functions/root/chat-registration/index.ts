@@ -1,8 +1,7 @@
 import { HttpStatusCode } from "azure-functions-ts-essentials";
-import rcdaHttpFunction from "@/function-utils/rcdaHttpFunction";
+import rcdaHttpFunction from "@/functions/utils/rcdaHttpFunction";
 import ChatRegistrationRequest from "@common/models/chat-registration/ChatRegistrationRequest";
 import ChatRegistrationService from "@/services/ChatRegistrationService";
-import RcdaRoles from "@common/system/RcdaRoles";
 
 class ChatRegistrationRequestDependencies {
 
@@ -15,7 +14,7 @@ class ChatRegistrationRequestDependencies {
 
 export default rcdaHttpFunction<ChatRegistrationRequest, void, ChatRegistrationRequestDependencies>(
   ChatRegistrationRequestDependencies,
-  [ RcdaRoles.Administrator ],
+  true,
   async (req, { chatRegistrationService }, { session }) => {
 
     await chatRegistrationService.register(req.body, session);

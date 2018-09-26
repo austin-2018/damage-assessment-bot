@@ -30,8 +30,8 @@ export default class LoginRepo {
 
     static jwtSignature = "54376454frwcbyx6c4wgurwj";
 
-    public async getSessionToken(user: UserModel): Promise<string> {
-        return this.jwt.sign(user, LoginRepo.jwtSignature);
+    public async getSessionToken(session: UserSession): Promise<string> {
+        return this.jwt.sign(session, LoginRepo.jwtSignature);
     }
 
     public async parseSessionToken(token: string): Promise<UserSession> {

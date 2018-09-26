@@ -3,7 +3,7 @@ import LoginResponse from "@common/models/login/LoginResponse";
 import LoginRequest from "@common/models/login/LoginRequest";
 import UserRepo from "@/repo/UserRepo";
 import UserSession from "@common/models/user/UserSession";
-import RcdaClientError from "@/common/errors/RcdaClientError";
+import RcdaClientError from "@common/errors/RcdaClientError";
 
 export default class LoginService {
     constructor(
@@ -28,8 +28,14 @@ export default class LoginService {
             user = await this.userRepo.add({ id: userId, roles: [], chatChannels: {} });
         }
 
+        let session: UserSession = {
+            username: user.id,
+            roles: user.roles,
+            expires: new Date().toUTCString()
+        };
+
         return {
-            sessionToken: await this.loginRepo.getSessionToken(user)
+            sessionToken: await this.loginRepo.getSessionToken(session)
         };
     }
 

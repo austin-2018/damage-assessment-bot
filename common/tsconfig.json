@@ -11,7 +11,7 @@
         "strictNullChecks": true,
         "outDir": "bin",
         "composite": true,
-        "declaration": true,
+        "declarationMap": true,
         "rootDir": "./src",
         "baseUrl": "src",
         "paths": {
