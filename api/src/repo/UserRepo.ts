@@ -1,6 +1,7 @@
 import RcdaCosmosClient, { RcdaContainers } from "@/repo/utils/RcdaCosmosClient";
-import UserModel from "@common/models/user/UserModel";
+import UserModel from "@common/models/resources/UserModel";
 import RcdaSystemError from "@common/errors/RcdaSystemError";
+import RcdaCountries from "@common/system/RcdaCountries";
 
 export default class UserRepo {
 
@@ -40,17 +41,16 @@ export default class UserRepo {
         }
     }
 
-    async getByChatAddress({ channelId, userId }: {channelId: string, userId: string }): Promise<UserModel> {
+    async getByChatAddress(chatAddressId: string): Promise<UserModel> {
         let querySpec = {
             query: `
                 SELECT * 
                 FROM ROOT c 
-                WHERE c.chatChannels[@channelId] = @userId
+                WHERE ARRAY_CONTAINS(c.chatAddresses, { chatAddressId: @chatAddressId })
             `,
             parameters: [
-                { name: "@channelId", value: channelId },
-                { name: "@userId", value: userId }
-            ]
+                { name: "@chatAddressId", value: chatAddressId }
+            ] 
         };
 
         let response = await this.cosmosClient.users.items.query<UserModel>(querySpec).toArray();
@@ -63,5 +63,10 @@ export default class UserRepo {
             return response.result[0];
         }
         throw new RcdaSystemError("More than one user was found with the provided chat address.");
+    }
+
+    //TODO country code enum?
+    async getAllByCountry(country: RcdaCountries): Promise<UserModel[]> {
+        return [];
     }
 }

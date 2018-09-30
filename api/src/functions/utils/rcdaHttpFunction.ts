@@ -2,20 +2,20 @@ import { Context, HttpStatusCode } from "azure-functions-ts-essentials";
 import { RcdaHttpFunction, RcdaHttpRequest, RcdaHttpResponse, RcdaHttpResponseError } from "@/functions/utils/rcda-http-types";
 import RcdaHttpHeaders from "@/functions/utils/RcdaHttpHeaders";
 import LoginService from "@/services/LoginService";
-import UserSession from "@common/models/user/UserSession";
+import UserSession from "@common/models/resources/UserSession";
 import RcdaRoles from "@common/system/RcdaRoles";
-import RcdaError, { RcdaErrorTypes } from "@common/errors/RcdaError";
+import RcdaError from "@common/errors/RcdaError";
+import RcdaClientError from "@common/errors/RcdaClientError";
+import RcdaSystemError from "@common/errors/RcdaSystemError";
 import RcdaAuthPolicy from "@common/system/RcdaAuthPolicy";
+import { RcdaHttpResponseHeaders, RcdaAzureHttpFunction } from "@/functions/utils/rcda-http-types";
 
 export default function rcdaHttpFunction<TBody, TResult, TDependencies>(    
-    dependenciesConstructor: new () => TDependencies,
+    dependencyFactory: () => TDependencies,
     authPolicy: RcdaAuthPolicy,
-    executeFunction: RcdaHttpFunction<TBody, TResult, TDependencies>) 
+    executeFunction: RcdaHttpFunction<TBody, TResult, TDependencies>): RcdaAzureHttpFunction<TBody,TResult,TDependencies>
 {
-    return async function(
-        context: Context, 
-        req: RcdaHttpRequest<TBody>, 
-        dependencies = new dependenciesConstructor()): Promise<RcdaHttpResponse<TResult>> 
+    let _self: any = async function(context: Context, req: RcdaHttpRequest<TBody>): Promise<RcdaHttpResponse<TResult>> 
     {
         let session: UserSession = null;
         // Authenticate, if required
@@ -44,7 +44,7 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
         }
         try {
             // Execute the request
-            let response = await executeFunction(req, dependencies, { context, session });
+            let response = await executeFunction(req, _self.dependencyFactory(), { context, session });
             response.headers = response.headers || {};
             if (response.body && !response.headers[RcdaHttpHeaders.ContentType]) {
                 response.headers[RcdaHttpHeaders.ContentType] = "application/json";
@@ -55,6 +55,10 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
             return formatErrorResponse(error);
         }
     }
+
+    _self.dependencyFactory = dependencyFactory;
+
+    return _self;
 }
 
 function isValidSession(session: UserSession): boolean {
@@ -90,30 +94,29 @@ function isAuthorized(session: UserSession, authPolicy: RcdaAuthPolicy): boolean
 }
 
 function formatErrorResponse(error: Error): RcdaHttpResponse<RcdaHttpResponseError> {
-    let response = {
-        status: HttpStatusCode.NotImplemented,
-        body: <RcdaHttpResponseError>null,
-        headers: {
-            [RcdaHttpHeaders.ContentType]: "application/json"
-        }
-    };
-    let rcdaError = error as RcdaError;
-    switch (rcdaError.typeId) {
-        case RcdaErrorTypes.ClientError: {
-            response.status = HttpStatusCode.BadRequest;
-            response.body = buildError(rcdaError);
-            break;
-        }
-        case undefined:
-        case RcdaErrorTypes.SystemError: {
-            response.status = HttpStatusCode.InternalServerError;
-            break;
-        }
+    
+    if (error instanceof RcdaClientError) {
+        return httpResponse(HttpStatusCode.BadRequest, formatError(error))
     }
-    return response;
+    if (error instanceof RcdaSystemError) {
+        return httpResponse(HttpStatusCode.InternalServerError);
+    }
+    if (error instanceof RcdaError) {
+        return httpResponse(HttpStatusCode.NotImplemented);
+    }
+    
+    return httpResponse(HttpStatusCode.InternalServerError);
 }
 
-function buildError(error: RcdaError): RcdaHttpResponseError {
+function httpResponse(status: HttpStatusCode, body?: RcdaHttpResponseError, headers?: RcdaHttpResponseHeaders) {
+    return {
+        status,
+        body,
+        headers: headers || !body ? {} : { [RcdaHttpHeaders.ContentType]: "application/json" }
+    }
+}
+
+function formatError(error: RcdaError): RcdaHttpResponseError {
     let response: RcdaHttpResponseError = {
         error: {
             code: error.typeId,

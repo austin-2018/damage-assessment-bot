@@ -1,7 +1,7 @@
 import { ChatConnector, MemoryBotStorage } from "botbuilder";
 import RcdaBot from "@/chat/RcdaBot";
 
-const connector: ChatConnector = new ChatConnector({
+const connector = new ChatConnector({
     appId: process.env.MicrosoftAppId,
     appPassword: process.env.MicrosoftAppPassword
 });

@@ -1,4 +1,5 @@
 const enum RcdaRoles {
-    Administrator = "administrator"
+    SystemAdmin = "SystemAdmin",
+    Admin = "Admin"
 }
 export default RcdaRoles;

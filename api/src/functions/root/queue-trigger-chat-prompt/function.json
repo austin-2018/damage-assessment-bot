@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+        "type": "queueTrigger",
+        "direction": "in",
+        "name": "chatMessage",
+        "queueName": "chat-prompt",
+        "connection":"AzureWebJobsStorage"
+    }
+  ],
+  "disabled": true
+}

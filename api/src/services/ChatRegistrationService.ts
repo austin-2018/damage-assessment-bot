@@ -1,7 +1,7 @@
 import ChatRegistrationRepo from "repo/ChatRegistrationRepo";
-import ChatRegistrationRequest from "@common/models/chat-registration/ChatRegistrationRequest";
+import ChatRegistrationRequest from "@common/models/services/chat-registration/ChatRegistrationRequest";
 import RcdaClientError from "@common/errors/RcdaClientError";
-import UserSession from "@common/models/user/UserSession";
+import UserSession from "@common/models/resources/UserSession";
 import UserRepo from "@/repo/UserRepo";
 
 export default class ChatRegistrationService {
@@ -26,8 +26,16 @@ export default class ChatRegistrationService {
 
         // add address for user (aka this info is needed. should get it back from repo)
         let user = await this.userRepo.get((<any>userSession).id);
-        user.chatChannels = user.chatChannels || {};
-        user.chatChannels[address.channelId] = address.user.id;
+        user.chatAddresses = user.chatAddresses || [];
+        
+        let targetAddress = null;//user.chatAddresses.find(c => (c.id && c.id.channelId) === address.channelId);
+        if (!targetAddress) {
+            //TODO user.chatAddresses.push({ id: { channelId: address.channelId, userId: address.user.id }, value: address });
+        }
+        else {
+            // targetAddress.id.userId = address.user.id;
+            // targetAddress.value = address;
+        }
 
         await this.userRepo.update(user);
 

@@ -1,9 +1,11 @@
 import LoginRepo from "@/repo/LoginRepo";
-import LoginResponse from "@common/models/login/LoginResponse";
-import LoginRequest from "@common/models/login/LoginRequest";
+import LoginResponse from "@common/models/services/login/LoginResponse";
+import LoginRequest from "@common/models/services/login/LoginRequest";
 import UserRepo from "@/repo/UserRepo";
-import UserSession from "@common/models/user/UserSession";
+import UserSession from "@common/models/resources/UserSession";
+import UserModel from "@common/models/resources/UserModel";
 import RcdaClientError from "@common/errors/RcdaClientError";
+import makeModel from "@common/utils/makeModel";
 
 export default class LoginService {
     constructor(
@@ -25,12 +27,13 @@ export default class LoginService {
         let userId = loginRequest.username;
         let user = await this.userRepo.get(userId);
         if (!user) {
-            user = await this.userRepo.add({ id: userId, roles: [], chatChannels: {} });
+            let userModel = makeModel(UserModel, { id: userId });
+            user = await this.userRepo.add(userModel);
         }
 
         let session: UserSession = {
             username: user.id,
-            roles: user.roles,
+            roles: user.permissions.roles,
             expires: new Date().toUTCString()
         };
 

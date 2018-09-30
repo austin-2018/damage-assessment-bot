@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import { sign, SignOptions, Secret, VerifyOptions, verify } from "jsonwebtoken";
-import LoginRequest from "@common/models/login/LoginRequest";
-import UserModel from "@common/models/user/UserModel";
-import UserSession from "@common/models/user/UserSession";
+import LoginRequest from "@common/models/services/login/LoginRequest";
+import UserModel from "@common/models/resources/UserModel";
+import UserSession from "@common/models/resources/UserSession";
 import RcdaCosmosClient from "@/repo/utils/RcdaCosmosClient";
 
 export default class LoginRepo {

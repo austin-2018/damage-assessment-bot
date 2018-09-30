@@ -1,6 +1,6 @@
 import { Context, HttpRequest, HttpResponse, HttpStatusCode } from "azure-functions-ts-essentials";
 import RcdaHttpHeaders from "@/functions/utils/RcdaHttpHeaders";
-import UserSession from "@common/models/user/UserSession";
+import UserSession from "@common/models/resources/UserSession";
 
 export interface RcdaHttpRequest<TBody> extends HttpRequest {
     body: TBody;
@@ -22,10 +22,18 @@ export interface RcdaHttpResponse<TResult> extends HttpResponse {
     headers?: RcdaHttpResponseHeaders;
 }
 
-export type RcdaHttpFunctionContext = { context: Context, session?: UserSession };
+export interface RcdaHttpFunctionContext { 
+    context: Context, 
+    session?: UserSession 
+};
 
-export type RcdaHttpFunction<TBody, TResult, TDependencies> = 
-    (req: RcdaHttpRequest<TBody>, deps: TDependencies, context: RcdaHttpFunctionContext) => Promise<RcdaHttpResponse<TResult>>;
+export interface RcdaHttpFunction<TBody, TResult, TDependencies> {
+    (req: RcdaHttpRequest<TBody>, deps: TDependencies, context: RcdaHttpFunctionContext): Promise<RcdaHttpResponse<TResult>>;
+}
 
+export interface RcdaAzureHttpFunction<TBody, TResult, TDependencies> {
+    (context: Context, req: RcdaHttpRequest<TBody>): Promise<RcdaHttpResponse<TResult>>;
+    dependencyFactory: new () => TDependencies;
+}
 
 
