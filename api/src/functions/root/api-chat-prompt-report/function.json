@@ -2,7 +2,7 @@
   "bindings": [
     {
       "type": "httpTrigger",
-      "route": "chat/messages/prompt/report",
+      "route": "chat/prompt/report",
       "methods": [
         "post"
       ],

@@ -2,6 +2,7 @@
   "bindings": [
     {
       "type": "httpTrigger",
+      "route": "login",
       "methods": [
         "post"
       ],

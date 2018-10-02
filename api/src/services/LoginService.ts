@@ -1,48 +1,55 @@
-import LoginRepo from "@/repo/LoginRepo";
+import IfrcGoAuthRepo from "@/repo/IfrcGoAuthRepo";
 import LoginResponse from "@common/models/services/login/LoginResponse";
 import LoginRequest from "@common/models/services/login/LoginRequest";
 import UserRepo from "@/repo/UserRepo";
 import UserSession from "@common/models/resources/UserSession";
 import UserModel from "@common/models/resources/UserModel";
 import RcdaClientError from "@common/errors/RcdaClientError";
-import makeModel from "@common/utils/makeModel";
+import RcdaAuthenticationProviders from "@common/system/RcdaAuthenticationProviders";
+import SessionUtility from "@/services/utils/SessionUtility";
+import uuid = require("uuid");
 
 export default class LoginService {
     constructor(
-        private loginRepo: LoginRepo,
-        private userRepo: UserRepo) {}
+        private ifrcGoAuthRepo: IfrcGoAuthRepo,
+        private userRepo: UserRepo,
+        private sessionUtility: SessionUtility) {}
 
     public static getInstance() {
         return new LoginService(
-            LoginRepo.getInstance(), 
-            UserRepo.getInstance());
+            IfrcGoAuthRepo.getInstance(), 
+            UserRepo.getInstance(),
+            SessionUtility.getInstance());
     }
 
     public async login(loginRequest: LoginRequest): Promise<LoginResponse> {
-        if (!await this.loginRepo.verifyLogin(loginRequest)) {
+        let ifrcUser = await this.ifrcGoAuthRepo.verifyLogin(loginRequest);
+
+        if (!ifrcUser) {
             throw new RcdaClientError("The provided authentication credentials are invalid");
         }
 
-        //TODO use user id as it is stored in the auth response
-        let userId = loginRequest.username;
-        let user = await this.userRepo.get(userId);
+        let user = await this.userRepo.getByAccount(ifrcUser.id, RcdaAuthenticationProviders.IfrcGo);
         if (!user) {
-            let userModel = makeModel(UserModel, { id: userId });
-            user = await this.userRepo.add(userModel);
+            let newUser = new UserModel({ 
+                id: uuid(),
+                accounts: [
+                    {
+                        id: ifrcUser.id,
+                        provider: RcdaAuthenticationProviders.IfrcGo,
+                        sessionToken: null
+                    }
+                ]
+            });
+            user = await this.userRepo.create(newUser);
         }
 
-        let session: UserSession = {
-            username: user.id,
-            roles: user.permissions.roles,
-            expires: new Date().toUTCString()
-        };
-
         return {
-            sessionToken: await this.loginRepo.getSessionToken(session)
+            sessionToken: await this.sessionUtility.getSessionToken(user)
         };
     }
 
     public async verify(sessionToken: string): Promise<UserSession> {
-        return await this.loginRepo.parseSessionToken(sessionToken);
+        return await this.sessionUtility.parseSessionToken(sessionToken);
     }
 }

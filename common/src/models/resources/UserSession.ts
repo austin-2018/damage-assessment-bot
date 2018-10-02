@@ -1,7 +1,7 @@
 import RcdaRoles from "@common/system/RcdaRoles";
 
 export default interface UserSession {
-    username: string;
+    userId: string;
     roles: RcdaRoles[];
-    expires: string;
+    issued: string; // Date and time that the session started
 }

@@ -7,12 +7,12 @@ import RcdaRoles from "@common/system/RcdaRoles";
 import RcdaError from "@common/errors/RcdaError";
 import RcdaClientError from "@common/errors/RcdaClientError";
 import RcdaSystemError from "@common/errors/RcdaSystemError";
-import RcdaAuthPolicy from "@common/system/RcdaAuthPolicy";
+import RcdaAuthorizationPolicy from "@common/system/RcdaAuthorizationPolicy";
 import { RcdaHttpResponseHeaders, RcdaAzureHttpFunction } from "@/functions/utils/rcda-http-types";
 
 export default function rcdaHttpFunction<TBody, TResult, TDependencies>(    
     dependencyFactory: () => TDependencies,
-    authPolicy: RcdaAuthPolicy,
+    authPolicy: RcdaAuthorizationPolicy,
     executeFunction: RcdaHttpFunction<TBody, TResult, TDependencies>): RcdaAzureHttpFunction<TBody,TResult,TDependencies>
 {
     let _self: any = async function(context: Context, req: RcdaHttpRequest<TBody>): Promise<RcdaHttpResponse<TResult>> 
@@ -62,16 +62,21 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
 }
 
 function isValidSession(session: UserSession): boolean {
-    if (!session || !session.expires) {
+    if (!session || !session.issued) {
         return false;
     }
     //TODO refactor date time logic into common utility
-    let expirationTime = new Date(session.expires);
+    let tokenIssuedDate = new Date(session.issued);
 
-    return expirationTime > new Date();
+    //TODO put auth logic somewhere else?
+    // Sets expiration as 30 days from issue date
+    let expirationDate = new Date();
+    expirationDate.setDate(tokenIssuedDate.getDate() + 30); 
+
+    return new Date() < expirationDate;
 }
 
-function isAuthorized(session: UserSession, authPolicy: RcdaAuthPolicy): boolean {
+function isAuthorized(session: UserSession, authPolicy: RcdaAuthorizationPolicy): boolean {
     if (!authPolicy) {
         return true;
     }

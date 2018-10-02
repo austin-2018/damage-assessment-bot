@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "lib": ["es6", "dom"],
+        "lib": ["es6", "es2016"],
         "types": ["reflect-metadata"],
         "module": "commonjs",
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "noImplicitAny": true,
         "strict": true,
         "strictNullChecks": true,
         "outDir": "bin",

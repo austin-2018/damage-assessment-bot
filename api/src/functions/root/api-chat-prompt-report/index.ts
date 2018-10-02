@@ -16,7 +16,7 @@ class ChatPromptFunctionDependencies {
 
 export default rcdaHttpFunction<ChatPromptReportRequest, void, ChatPromptFunctionDependencies>(
   ChatPromptFunctionDependencies.getInstance,
-  [RcdaRoles.Admin],
+  [RcdaRoles.DashboardAdmin],
   async (req, { chatMessageService }, { context }) => {
 
     let bindings = <{queueItems: ChatPromptRequest[]}>context.bindings;

@@ -1,36 +1,15 @@
-import { IAddress } from "botbuilder";
 import RcdaCosmosClient from "@/repo/utils/RcdaCosmosClient";
+import ChatAddressModel from "@common/models/resources/ChatAddressModel";
+import CosmosResourceRepo from "@/repo/utils/CosmosResourceRepo";
+import modelProp from "@/repo/utils/modelProp";
 
+export default class ChatAddressRepo extends CosmosResourceRepo<ChatAddressModel> {
 
-export default class ChatRegistrationRepo {
-
-    constructor(private cosmosClient: RcdaCosmosClient) {}
-
-    public static getInstance(): ChatRegistrationRepo {
-        return new ChatRegistrationRepo(RcdaCosmosClient.getInstance());
+    constructor(cosmosClient: RcdaCosmosClient) {
+        super(cosmosClient, "ChatRegistrations");
     }
 
-    public async setupRegistrationToken(address: IAddress): Promise<string> {
-        let registrationToken = this.getRegistrationToken();
-        await this.cosmosClient.chatAddresses.items.upsert({ id: registrationToken, address });
-        return registrationToken;
-    }
-
-    public async verifyRegistrationToken(registrationToken: string): Promise<IAddress> {
-        let result = await this.cosmosClient.chatAddresses.item(registrationToken.toUpperCase()).read();
-        if (!result) {
-            return null;
-        }
-        return result.body.address;
-    }
-
-    private getRegistrationToken() {
-        //TODO: validate if this is acceptable for multi-language app
-        let charSet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        let token = "";
-        for (var i = 1; i <= 6; i++) {
-            token += charSet[Math.floor(Math.random() * charSet.length)]
-        }
-        return token;
+    static getInstance(): ChatAddressRepo {
+        return new ChatAddressRepo(RcdaCosmosClient.getInstance());
     }
 }

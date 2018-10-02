@@ -1,25 +1,19 @@
 import rcdaFunction from "@/functions/utils/rcdaFunction";
-import RcdaBot from "@/chat/RcdaBot";
 import ChatPromptRequest from "@common/models/services/chat-prompt/ChatPromptRequest";
-import ChatMessageService from "@/services/ChatPromptReportService";
-import LazyValue from "@common/utils/LazyValue";
+import ChatPromptController from "@/chat/controllers/ChatPromptController";
 
 class ChatPromptFunctionDependencies {
 
-    constructor(public rcdaBot: RcdaBot, public chatMessageService: ChatMessageService) {}
-
-    private static lazyRcdaBot = new LazyValue(() => RcdaBot.getInstance());
+    constructor(public chatPromptController: ChatPromptController) {}
 
     static getInstance() {
-        return new ChatPromptFunctionDependencies(
-            this.lazyRcdaBot.value, 
-            ChatMessageService.getInstance());
+        return new ChatPromptFunctionDependencies(ChatPromptController.getInstance());
     }
 }
 
-export default rcdaFunction<{chatMessage: ChatPromptRequest}, ChatPromptFunctionDependencies>(
+export default rcdaFunction<{request: ChatPromptRequest}, ChatPromptFunctionDependencies>(
     ChatPromptFunctionDependencies.getInstance,
-    async ({ chatMessage }, { rcdaBot, chatMessageService }) => {
-        //TODO await chatMessageService.sendChatMessage(chatMessage);
+    async ({ request }, { chatPromptController }) => {
+        await chatPromptController.sendChatPrompt(request);
     }
 );

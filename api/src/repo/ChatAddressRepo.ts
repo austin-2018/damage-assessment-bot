@@ -1,18 +1,15 @@
 import RcdaCosmosClient from "@/repo/utils/RcdaCosmosClient";
+import ChatAddressModel from "@common/models/resources/ChatAddressModel";
+import CosmosResourceRepo from "@/repo/utils/CosmosResourceRepo";
+import modelProp from "@/repo/utils/modelProp";
 
-export default class ChatAddressRepo {
+export default class ChatAddressRepo extends CosmosResourceRepo<ChatAddressModel> {
 
-    constructor(public cosmosClient: RcdaCosmosClient) {}
+    constructor(cosmosClient: RcdaCosmosClient) {
+        super(cosmosClient, "ChatAddresses");
+    }
 
     static getInstance(): ChatAddressRepo {
         return new ChatAddressRepo(RcdaCosmosClient.getInstance());
-    }
-
-    async get(id: string): Promise<any> {
-        return this.cosmosClient.chatAddresses.item("");//TODO
-    }
-
-    async getByRegistrationToken(): Promise<any> {
-        return this.cosmosClient;//TODO
     }
 }

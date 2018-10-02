@@ -3,7 +3,7 @@
     {
         "type": "queueTrigger",
         "direction": "in",
-        "name": "chatMessage",
+        "name": "request",
         "queueName": "chat-prompt",
         "connection":"AzureWebJobsStorage"
     }
