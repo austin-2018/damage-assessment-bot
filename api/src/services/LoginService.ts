@@ -31,7 +31,8 @@ export default class LoginService {
 
         let user = await this.userRepo.getByAccount(ifrcUser.id, RcdaAuthenticationProviders.IfrcGo);
         if (!user) {
-            let newUser = new UserModel({ 
+            user = await this.userRepo.create({
+                ...new UserModel(), 
                 id: uuid(),
                 accounts: [
                     {
@@ -41,7 +42,6 @@ export default class LoginService {
                     }
                 ]
             });
-            user = await this.userRepo.create(newUser);
         }
 
         return {

@@ -1,8 +1,8 @@
 
-export default class ChatAddressModel {
+export default class ChatRegistrationModel {
     id!: string;
-    channel!: string;
-    value!: ChatAddressValue;
+    chatAddressId!: string;
+    chatAddress!: ChatAddressValue;
 }
 
 export interface ChatAddressValue {

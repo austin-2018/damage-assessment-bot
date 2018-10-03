@@ -1,7 +1,7 @@
 
 export default interface ChatPromptRequest {
-    chatAddressId: string;
     requestType: ChatPromptRequestType;
+    chatAddress: any;
     args?: any
 }
 

@@ -68,7 +68,7 @@ export const myanmarDisasterAssessmentDialog = rcdaChatDialog(
             console.log(jsonReport);
 
             //TODO review format of object
-            await disasterAssessmentRepo.add(session.conversationData);
+            await disasterAssessmentRepo.create(session.conversationData);
                         
             session.send("Thanks for providing this data!");
 

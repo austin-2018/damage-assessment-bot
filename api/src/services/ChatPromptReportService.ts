@@ -21,9 +21,9 @@ export default class ChatMessageService {
             if (user.chatAddresses) {
                 for (const address of user.chatAddresses) {
                     chatPrompts.push({
-                        chatAddressId: address.id,
+                        chatAddress: address.value,
                         requestType: ChatPromptRequestType.PromptReport
-                    })
+                    });
                 }
             }
         };

@@ -13,9 +13,9 @@ import { RcdaHttpResponseHeaders, RcdaAzureHttpFunction } from "@/functions/util
 export default function rcdaHttpFunction<TBody, TResult, TDependencies>(    
     dependencyFactory: () => TDependencies,
     authPolicy: RcdaAuthorizationPolicy,
-    executeFunction: RcdaHttpFunction<TBody, TResult, TDependencies>): RcdaAzureHttpFunction<TBody,TResult,TDependencies>
+    implementation: RcdaHttpFunction<TBody, TResult, TDependencies>): RcdaAzureHttpFunction<TBody,TResult,TDependencies>
 {
-    let _self: any = async function(context: Context, req: RcdaHttpRequest<TBody>): Promise<RcdaHttpResponse<TResult>> 
+    let result: any = async function(context: Context, req: RcdaHttpRequest<TBody>): Promise<RcdaHttpResponse<TResult>> 
     {
         let session: UserSession = null;
         // Authenticate, if required
@@ -44,7 +44,7 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
         }
         try {
             // Execute the request
-            let response = await executeFunction(req, _self.dependencyFactory(), { context, session });
+            let response = await implementation(req, dependencyFactory(), { context, session });
             response.headers = response.headers || {};
             if (response.body && !response.headers[RcdaHttpHeaders.ContentType]) {
                 response.headers[RcdaHttpHeaders.ContentType] = "application/json";
@@ -56,9 +56,11 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
         }
     }
 
-    _self.dependencyFactory = dependencyFactory;
+    result.dependencyFactory = dependencyFactory;
+    result.implementation = implementation;
+    result.authPolicy = authPolicy;
 
-    return _self;
+    return result;
 }
 
 function isValidSession(session: UserSession): boolean {

@@ -15,8 +15,8 @@ export default rcdaChatMiddleware(
         let userSession: UserModel = session.userData.userSession;
 
         if (!authDialogIsActive && !userSession) {
-            let address = session.message.address;
-            let user = await userRepo.getByChatAddress(getChatAddressId(address));
+            let addressId = getChatAddressId(session.message.address);
+            let user = await userRepo.getByChatAddress(addressId);
             if (!user) {
                 session.beginDialog(authenticationDialog.id);
                 return;

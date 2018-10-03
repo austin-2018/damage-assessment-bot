@@ -1,9 +1,8 @@
 import RcdaCosmosClient from "@/repo/utils/RcdaCosmosClient";
-import ChatAddressModel from "@common/models/resources/ChatAddressModel";
+import ChatRegistrationModel from "@common/models/resources/ChatRegistrationModel";
 import CosmosResourceRepo from "@/repo/utils/CosmosResourceRepo";
-import modelProp from "@/repo/utils/modelProp";
 
-export default class ChatAddressRepo extends CosmosResourceRepo<ChatAddressModel> {
+export default class ChatAddressRepo extends CosmosResourceRepo<ChatRegistrationModel> {
 
     constructor(cosmosClient: RcdaCosmosClient) {
         super(cosmosClient, "ChatRegistrations");

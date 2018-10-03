@@ -1,6 +1,7 @@
 import { Context, HttpRequest, HttpResponse, HttpStatusCode } from "azure-functions-ts-essentials";
 import RcdaHttpHeaders from "@/functions/utils/RcdaHttpHeaders";
 import UserSession from "@common/models/resources/UserSession";
+import RcdaAuthorizationPolicy from "@common/system/RcdaAuthorizationPolicy";
 
 export interface RcdaHttpRequest<TBody> extends HttpRequest {
     body: TBody;
@@ -33,7 +34,9 @@ export interface RcdaHttpFunction<TBody, TResult, TDependencies> {
 
 export interface RcdaAzureHttpFunction<TBody, TResult, TDependencies> {
     (context: Context, req: RcdaHttpRequest<TBody>): Promise<RcdaHttpResponse<TResult>>;
-    dependencyFactory: new () => TDependencies;
+    dependencyFactory: () => TDependencies;
+    implementation: RcdaHttpFunction<TBody, TResult, TDependencies>,
+    authPolicy: RcdaAuthorizationPolicy
 }
 
 

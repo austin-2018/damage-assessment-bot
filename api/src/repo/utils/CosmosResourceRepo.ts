@@ -40,7 +40,17 @@ export default abstract class CosmosResourceRepo<TResource extends {id: string}>
         }
     }
 
-    async query(query: string, parameters?: {[key: string]: string|number|boolean}, options?: FeedOptions): Promise<TResource[]> {
+    async delete(id: string): Promise<void> {
+        try {
+            let response = await this.resourceContainer.item(id).delete();
+            return;
+        }
+        catch (ex) {
+            throw ex;
+        }
+    }
+
+    async query<TResult = TResource>(query: string, parameters?: {[key: string]: string|number|boolean}, options?: FeedOptions): Promise<TResource[]> {
 
         let querySpec: SqlQuerySpec = { query, parameters: [] }
 
@@ -56,7 +66,7 @@ export default abstract class CosmosResourceRepo<TResource extends {id: string}>
         return response.result;
     }
 
-    async querySingle(query: string, parameters?: {[key: string]: string|number|boolean}, options?: FeedOptions): Promise<TResource> {
+    async querySingle<TResult = TResource>(query: string, parameters?: {[key: string]: string|number|boolean}, options?: FeedOptions): Promise<TResource> {
 
         let results = await this.query(query, parameters, options);
         

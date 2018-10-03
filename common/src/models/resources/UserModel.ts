@@ -1,6 +1,5 @@
 import RcdaRoles from "@common/system/RcdaRoles";
 import RcdaAuthenticationProviders from "@common/system/RcdaAuthenticationProviders";
-import applyToModel from "@common/utils/applyToModel";
  
 export default class UserModel {
     id!: string;
@@ -9,7 +8,6 @@ export default class UserModel {
     permissions: UserPermissionsModel = new UserPermissionsModel();
     accounts: UserAccountModel[] = [];
     chatAddresses: UserChatAddressModel[] = [];
-    lastActiveChatAddressId: string|null = null; 
     countries: UserCountryMembershipModel[] = [];
     lastActiveCountryId: string|null = null;
 }
@@ -27,7 +25,7 @@ export class UserPermissionsModel {
 
 export class UserChatAddressModel {
     id!: string;
-    channel!: string;
+    value!: object;
 }
 
 export class UserCountryMembershipModel {

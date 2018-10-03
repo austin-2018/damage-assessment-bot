@@ -4,6 +4,7 @@ import rootDialog from "@/chat/dialogs/rootDialog";
 import authenticationDialog from "@/chat/dialogs/authenticationDialog";
 import authenticationMiddleware from "@/chat/middleware/authenticationMiddleware";
 import myanmarFormDialogs from "@/chat/dialogs/disaster-assessment/myanmar/myanmarDisasterAssessmentDialog";
+import promptReportDialog from "@/chat/dialogs/promptReportDialog";
 
 export default class RcdaBot extends UniversalBot {
     static getInstance(): RcdaBot {
@@ -21,10 +22,11 @@ export default class RcdaBot extends UniversalBot {
         });
      
         this.use(Middleware.sendTyping());
-        //this.useSessionMiddleware(authenticationMiddleware);
+        this.useSessionMiddleware(authenticationMiddleware);
 
         this.addDialog(rootDialog);
         this.addDialog(authenticationDialog);
+        this.addDialog(promptReportDialog);
 
         for (var myanmarFormDialog of myanmarFormDialogs) {
             this.addDialog(myanmarFormDialog)
