@@ -44,12 +44,14 @@ export default class LoginService {
             });
         }
 
+        let userSession = this.sessionUtility.getUserSession(user);
+
         return {
-            sessionToken: await this.sessionUtility.getSessionToken(user)
+            sessionToken: await this.sessionUtility.getSessionToken(userSession)
         };
     }
 
     public async verify(sessionToken: string): Promise<UserSession> {
-        return await this.sessionUtility.parseSessionToken(sessionToken);
+        return this.sessionUtility.parseSessionToken(sessionToken);
     }
 }

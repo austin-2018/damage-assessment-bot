@@ -1,7 +1,6 @@
 import { Context, HttpStatusCode } from "azure-functions-ts-essentials";
 import { RcdaHttpFunction, RcdaHttpRequest, RcdaHttpResponse, RcdaHttpResponseError } from "@/functions/utils/rcda-http-types";
 import RcdaHttpHeaders from "@/functions/utils/RcdaHttpHeaders";
-import LoginService from "@/services/LoginService";
 import UserSession from "@common/models/resources/UserSession";
 import RcdaRoles from "@common/system/RcdaRoles";
 import RcdaError from "@common/errors/RcdaError";
@@ -9,6 +8,7 @@ import RcdaClientError from "@common/errors/RcdaClientError";
 import RcdaSystemError from "@common/errors/RcdaSystemError";
 import RcdaAuthorizationPolicy from "@common/system/RcdaAuthorizationPolicy";
 import { RcdaHttpResponseHeaders, RcdaAzureHttpFunction } from "@/functions/utils/rcda-http-types";
+import SessionUtility from "@/services/utils/SessionUtility";
 
 export default function rcdaHttpFunction<TBody, TResult, TDependencies>(    
     dependencyFactory: () => TDependencies,
@@ -20,7 +20,7 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
         let session: UserSession = null;
         // Authenticate, if required
         if (authPolicy) {
-            let loginService = LoginService.getInstance();
+            let sessionUtil = SessionUtility.getInstance();
             if (!req.headers.authorization || ! req.headers.authorization.toLowerCase().startsWith("bearer ")) {
                 return {
                     status: HttpStatusCode.Unauthorized,
@@ -28,7 +28,7 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
                 }
             }
             let sessionToken = req.headers.authorization.slice("bearer ".length);
-            session = await loginService.verify(sessionToken);
+            session = sessionUtil.parseSessionToken(sessionToken);
             if (!isValidSession(session)) {
                 return {
                     status: HttpStatusCode.Unauthorized,
@@ -52,6 +52,7 @@ export default function rcdaHttpFunction<TBody, TResult, TDependencies>(
             return response;
         }
         catch (error) {
+            throw error;
             return formatErrorResponse(error);
         }
     }
