@@ -1,4 +1,10 @@
 import RcdaRoles from "@common/system/RcdaRoles";
 
-type RcdaAuthorizationPolicy = boolean|RcdaRoles[];
-export default RcdaAuthorizationPolicy;
+export default class RcdaAuthorizationPolicy {
+
+    constructor(...requiredRoles: RcdaRoles[]) {
+        this.requiredRoles = requiredRoles;
+    }
+
+    readonly requiredRoles: RcdaRoles[] = [];
+}

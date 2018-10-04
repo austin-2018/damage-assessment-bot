@@ -1,6 +1,6 @@
 import RcdaCosmosClient from "./RcdaCosmosClient";
 import { Container, FeedOptions, SqlQuerySpec } from "@azure/cosmos";
-import RcdaSystemError from "@common/errors/RcdaSystemError";
+import RcdaError, { RcdaErrorTypes } from "@common/system/RcdaError";
 
 export default abstract class CosmosResourceRepo<TResource extends {id: string}> {
     
@@ -76,6 +76,6 @@ export default abstract class CosmosResourceRepo<TResource extends {id: string}>
         if (results.length === 1) {
             return results[0];
         }
-        throw new RcdaSystemError("More than one resource was found, but one or zero was expected.");
+        throw new RcdaError(RcdaErrorTypes.SystemError, "More than one resource was found, but one or zero was expected.");
     }
 }

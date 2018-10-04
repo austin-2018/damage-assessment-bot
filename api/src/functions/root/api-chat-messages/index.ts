@@ -14,7 +14,7 @@ new RcdaBot(connector, new MemoryBotStorage());
 // environment glue
 module.exports = function (context: any, req: any): any {
 
-    // TODO: evaluate more generic approaches
+    // TODO: evaluate more generic approaches/ TODO: evaluate more generic approaches
     //applicationInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 
     listener(req, context.res);

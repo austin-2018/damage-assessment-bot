@@ -1,6 +1,6 @@
 import UserSession from "@common/models/resources/UserSession";
 import RcdaRoles from "@common/system/RcdaRoles";
-import { DateUtility } from "@/services/utils/DateUtility";
+import DateUtility from "@/services/utils/DateUtility";
 
 export class TestUserSession implements UserSession {
 

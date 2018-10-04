@@ -1,6 +1,6 @@
 module.exports = {
     "roots": [
-        "<rootDir>/src/tests"
+        "<rootDir>/src/test"
     ],
     "testURL": "http://localhost",
     "transform": {

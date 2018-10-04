@@ -10,6 +10,7 @@
         "noImplicitAny": true,
         "strict": true,
         "strictNullChecks": true,
+        "isolatedModules": true,
         "outDir": "bin",
         "composite": true,
         "declarationMap": true,

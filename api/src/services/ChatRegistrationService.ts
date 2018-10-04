@@ -1,6 +1,6 @@
 import ChatRegistrationRepo from "@/repo/ChatRegistrationRepo";
 import ChatRegistrationRequest from "@common/models/services/chat-registration/ChatRegistrationRequest";
-import RcdaClientError from "@common/errors/RcdaClientError";
+import RcdaError, { RcdaErrorTypes } from "@common/system/RcdaError";
 import UserRepo from "@/repo/UserRepo";
 
 export default class ChatRegistrationService {
@@ -20,7 +20,7 @@ export default class ChatRegistrationService {
         let registration = await this.chatRegistrationRepo.get(chatRegistrationRequest.registrationToken)
         
         if (!registration) {
-            throw new RcdaClientError("The provided registration token is invalid.");
+            throw new RcdaError(RcdaErrorTypes.ClientError, "The provided registration token is invalid.");
         }
 
         let user = await this.userRepo.get(userId);

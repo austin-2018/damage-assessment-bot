@@ -2,89 +2,6 @@ import { ListStyle, Prompts, TextFormat } from "botbuilder";
 import rcdaChatDialog from "@/chat/utils/rcdaChatDialog";
 import DisasterAssessmentRepo from "@/repo/DisasterAssessmentRepo";
 
-export const myanmarDisasterAssessmentDialog = rcdaChatDialog(
-    "/disasterAssessmentMyanmar",
-    () => ({
-        disasterAssessmentRepo: DisasterAssessmentRepo.getInstance()
-    }),
-    [
-        ({ session }) => {
-            session.beginDialog("/ask_iana");
-        },
-        ({ session, result }) => {
-            session.beginDialog("/ask_people_affected");
-        },
-        ({ session, result }) => {
-            session.beginDialog("/ask_sector_concern");
-            // session.beginDialog("/sector_severity");
-        },
-        ({ session, result }) => {
-            // implement session resumption functionality
-            // session.conversationData.sector = session.conversationData.sector ? session.conversationData.sector : {};
-            session.conversationData.sectorConcern = result.response;
-            // console.log(session.conversationData);
-            session.beginDialog("/sector_severity");
-        },
-        ({ session, result }) => {
-            console.log(result.response);
-            session.conversationData.sectorSeverity = result.response;
-            // console.log(session.conversationData);
-            session.beginDialog("/sector_problem_factors");
-        },
-        ({ session, result }) => {
-            session.conversationData.sectorProblemFactors = result.response;
-            console.log(session.conversationData);
-            // tslint:disable-next-line:max-line-length
-            session.send("Without more assistance than the one already provided, are you worried about your ability to meet your basic needs for the sectors you have chosen in the next 3 months?");
-            session.beginDialog("/sector_future_concerns");
-        },
-        ({ session, result }) => {
-            session.conversationData.sectorFutureConcern = result.response;
-            console.log(session.conversationData);
-            session.beginDialog("/groups_requiring_immediate_assistance");
-        },
-        ({ session, result }) => {
-            session.conversationData.groupsRequiringImmediateAssistance = result.response;
-            console.log(session.conversationData);
-            session.beginDialog("/immediate_priority_sectors");
-        },
-        ({ session, result }) => {
-            session.conversationData.immediatePrioritySectors = result.response;
-            console.log(session.conversationData);
-            session.beginDialog("/immediate_vulnerable_groups");
-        },
-        ({ session, result }) => {
-            session.conversationData.immediateVulnerableGroups = result.response;
-            console.log(session.conversationData);
-            session.beginDialog("/favorable_response_modalities");
-        },
-        ({ session, result }) => {
-            session.conversationData.favorableResponseModalities = result.response;
-            console.log(session.conversationData);
-            Prompts.confirm(session, "I have recorded your data. Do you want to review this data once?", { listStyle: ListStyle.button });
-        },
-        async ({ session, result }, { disasterAssessmentRepo }) => {
-            const jsonReport: string = JSON.stringify(session.conversationData, null, 4);
-            console.log(jsonReport);
-
-            //TODO review format of object
-            await disasterAssessmentRepo.create(session.conversationData);
-                        
-            session.send("Thanks for providing this data!");
-
-            if (result.response === true) {
-                session.endConversation(jsonReport);
-            } else {
-                session.endConversation();
-            }
-        }
-    ],
-    {
-        triggers: [
-            { matches: "Greeting" }
-        ]
-    });
-
 const askSectorConcernDialog = rcdaChatDialog(
     "/ask_sector_concern",
     null,
@@ -459,6 +376,91 @@ const askUserInfoDialog = rcdaChatDialog(
             session.endDialog();
         }
     ]);
+
+    
+export const myanmarDisasterAssessmentDialog = rcdaChatDialog(
+    "/disasterAssessmentMyanmar",
+    () => ({
+        disasterAssessmentRepo: DisasterAssessmentRepo.getInstance()
+    }),
+    [
+        ({ session }) => {
+            session.beginDialog(askUserInfoDialog.id);
+        },
+        ({ session, result }) => {
+            session.beginDialog("/ask_people_affected");
+        },
+        ({ session, result }) => {
+            session.beginDialog("/ask_sector_concern");
+            // session.beginDialog("/sector_severity");
+        },
+        ({ session, result }) => {
+            // implement session resumption functionality
+            // session.conversationData.sector = session.conversationData.sector ? session.conversationData.sector : {};
+            session.conversationData.sectorConcern = result.response;
+            // console.log(session.conversationData);
+            session.beginDialog("/sector_severity");
+        },
+        ({ session, result }) => {
+            console.log(result.response);
+            session.conversationData.sectorSeverity = result.response;
+            // console.log(session.conversationData);
+            session.beginDialog("/sector_problem_factors");
+        },
+        ({ session, result }) => {
+            session.conversationData.sectorProblemFactors = result.response;
+            console.log(session.conversationData);
+            // tslint:disable-next-line:max-line-length
+            session.send("Without more assistance than the one already provided, are you worried about your ability to meet your basic needs for the sectors you have chosen in the next 3 months?");
+            session.beginDialog("/sector_future_concerns");
+        },
+        ({ session, result }) => {
+            session.conversationData.sectorFutureConcern = result.response;
+            console.log(session.conversationData);
+            session.beginDialog("/groups_requiring_immediate_assistance");
+        },
+        ({ session, result }) => {
+            session.conversationData.groupsRequiringImmediateAssistance = result.response;
+            console.log(session.conversationData);
+            session.beginDialog("/immediate_priority_sectors");
+        },
+        ({ session, result }) => {
+            session.conversationData.immediatePrioritySectors = result.response;
+            console.log(session.conversationData);
+            session.beginDialog("/immediate_vulnerable_groups");
+        },
+        ({ session, result }) => {
+            session.conversationData.immediateVulnerableGroups = result.response;
+            console.log(session.conversationData);
+            session.beginDialog("/favorable_response_modalities");
+        },
+        ({ session, result }) => {
+            session.conversationData.favorableResponseModalities = result.response;
+            console.log(session.conversationData);
+            Prompts.confirm(session, "I have recorded your data. Do you want to review this data once?", { listStyle: ListStyle.button });
+        },
+        async ({ session, result }, { disasterAssessmentRepo }) => {
+            const jsonReport: string = JSON.stringify(session.conversationData, null, 4);
+            console.log(jsonReport);
+
+            //TODO review format of object
+            await disasterAssessmentRepo.create(session.conversationData);
+                        
+            session.send("Thanks for providing this data!");
+
+            if (result.response === true) {
+                session.endConversation(jsonReport);
+            } else {
+                session.endConversation();
+            }
+        }
+    ],
+    {
+        triggers: [
+            { matches: "Greeting" }
+        ]
+    });
+
 
 const myanmarFormDialogs = [
     myanmarDisasterAssessmentDialog,

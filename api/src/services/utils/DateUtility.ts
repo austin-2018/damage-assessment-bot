@@ -1,5 +1,6 @@
+type DateOffset = { days: number };
 
-export class DateUtility {
+export default class DateUtility {
     static getInstance(): DateUtility {
         return new DateUtility();
     }
@@ -12,15 +13,23 @@ export class DateUtility {
         return this.currentDate().toUTCString();
     }
 
-    currentDateOffset(offset: { days: number }): Date {
-        let result = new Date();
+    currentDateOffset(offset: DateOffset): Date {
+        return this.applyDateOffset(this.currentDate(), offset);
+    }
+
+    applyDateOffset(date: Date, offset: DateOffset): Date {
+        let result = new Date(date);
         if (offset.days) {
             result.setDate(result.getDate() + offset.days); 
         }
         return result;
     }
 
-    currentDateOffsetString(offset: { days: number }): string {
+    currentDateOffsetString(offset: DateOffset): string {
         return this.currentDateOffset(offset).toUTCString();
+    }
+
+    parseDateString(date: string): Date {
+        return new Date(date);
     }
 }

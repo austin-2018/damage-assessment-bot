@@ -1,6 +1,6 @@
 import RcdaBot from "@/chat/RcdaBot";
 import ChatPromptRequest, { ChatPromptRequestType } from "@common/models/services/chat-prompt/ChatPromptRequest";
-import RcdaSystemError from "@common/errors/RcdaSystemError";
+import RcdaError, { RcdaErrorTypes } from "@common/system/RcdaError";
 import promptReportDialog from "@/chat/dialogs/promptReportDialog";
 
 export default class ChatPromptController {
@@ -19,7 +19,7 @@ export default class ChatPromptController {
         let dialogId = dialogMap[chatPromptRequest.requestType];
         
         if (!dialogId) {
-            throw new RcdaSystemError("Chat prompt type not recognized");
+            throw new RcdaError(RcdaErrorTypes.SystemError, "Chat prompt type not recognized");
         }
 
         this.rcdaBot.beginDialog(chatPromptRequest.chatAddress, dialogId, chatPromptRequest.args);
