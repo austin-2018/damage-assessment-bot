@@ -8,7 +8,7 @@ let sessionUtil = SessionUtility.getInstance();
 export default class HttpRequestMock<TBody=any> implements RcdaHttpRequest<TBody> {
     constructor({ body = null, userSession = null }: { body?: TBody, userSession?: UserSession } = {}) {
         this.body = body;
-        let token = sessionUtil.getSessionToken(userSession); 
+        let token = userSession ? sessionUtil.getSessionToken(userSession) : "";
         if (userSession) {
             this.headers["authorization"] = `bearer ${token}`
         }

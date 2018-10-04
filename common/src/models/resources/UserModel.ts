@@ -1,4 +1,4 @@
-import RcdaRoles from "@common/system/RcdaRoles";
+import { RcdaRoles } from "@common/system/RcdaRoles";
 import RcdaAuthenticationProviders from "@common/system/RcdaAuthenticationProviders";
  
 export default class UserModel {

@@ -12,6 +12,7 @@ import { TestUserSession } from "@/test/data/TestUserSession";
 import TestUserModel from "@/test/data/TestUserModel";
 import { RcdaHttpResponseError } from "@/functions/utils/rcda-http-types";
 import { RcdaErrorTypes } from "@common/system/RcdaError";
+import { RcdaRoles } from "@common/system/RcdaRoles";
 
 describe("api/chat/registration function", () => {
     
@@ -141,5 +142,45 @@ describe("api/chat/registration function", () => {
                 expect(body.error.message).toBe("The provided registration token is invalid.")
             });
         });
-    })
+    });
+
+    
+    describe("auth policy", () => { 
+        
+        function testAuthPolicy(roles: RcdaRoles[]|null) {
+            // Arrange
+            let chatRegistrationService = genericMock<ChatRegistrationService>({ 
+                register: async (id) => null
+            });
+            let httpRequest = new HttpRequestMock<ChatRegistrationRequest>({
+                body: {
+                    registrationToken: "fake-token"
+                },
+                userSession: roles !== null ? TestUserSession.Valid({ roles }) : null
+            });
+    
+            // Act
+            return testRcdaHttpFunction({
+                definition: apiChatRegistration,
+                dependencies: { chatRegistrationService },
+                request: httpRequest
+            });
+        }
+
+        // Assert  
+        test("session with unnecessary role should be authorized", async () => {
+            let result = await testAuthPolicy([RcdaRoles.DashboardAdmin]);
+            expect(result.status).toBe(HttpStatusCode.OK);
+        });
+
+        test("session without any roles should be authorized", async () => {
+            let result = await testAuthPolicy([]);
+            expect(result.status).toBe(HttpStatusCode.OK);
+        });
+
+        test("missing session token returns Unauthorized status", async () => {
+            let result = await testAuthPolicy(null);
+            expect(result.status).toBe(HttpStatusCode.Unauthorized);
+        })
+    });
 });

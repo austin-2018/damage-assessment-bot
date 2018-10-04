@@ -1,4 +1,4 @@
-import RcdaRoles from "@common/system/RcdaRoles";
+import { RcdaRoles } from "@common/system/RcdaRoles";
 
 export default interface UserSession {
     userId: string;

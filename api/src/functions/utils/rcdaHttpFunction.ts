@@ -6,18 +6,24 @@ import RcdaError, { RcdaErrorTypes } from "@common/system/RcdaError";
 import RcdaAuthorizationPolicy from "@common/system/RcdaAuthorizationPolicy";
 import { RcdaHttpResponseHeaders, RcdaAzureHttpFunction } from "@/functions/utils/rcda-http-types";
 import SessionUtility from "@/services/utils/SessionUtility";
-import RcdaRoles from "@common/system/RcdaRoles";
+import { RcdaRoles } from "@common/system/RcdaRoles";
 
 export default function rcdaHttpFunction<TBody, TResult, TDependencies>(    
     dependencyFactory: () => TDependencies,
-    authPolicy: RcdaAuthorizationPolicy|boolean|RcdaRoles[],
+    auth: boolean|RcdaRoles[]|RcdaAuthorizationPolicy,
     implementation: RcdaHttpFunction<TBody, TResult, TDependencies>): RcdaAzureHttpFunction<TBody,TResult,TDependencies>
 {
-    if (typeof authPolicy === "boolean") {
-        authPolicy = new RcdaAuthorizationPolicy();
+    let authPolicy: RcdaAuthorizationPolicy;
+    if (typeof auth === "boolean") {
+        authPolicy = auth ? new RcdaAuthorizationPolicy() : null;
     }
-    else if (authPolicy.length !== undefined) {
-        authPolicy
+    else if (typeof auth === "object") {
+        if (auth.hasOwnProperty("length")) {
+            authPolicy = new RcdaAuthorizationPolicy(<RcdaRoles[]>auth);
+        }
+        else {
+            authPolicy = <RcdaAuthorizationPolicy>auth;
+        }
     }
 
     let result: any = async function(context: Context, req: RcdaHttpRequest<TBody>): Promise<RcdaHttpResponse<TResult>> 

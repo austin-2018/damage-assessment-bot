@@ -1,27 +1,27 @@
 import { HttpStatusCode } from "azure-functions-ts-essentials";
 import rcdaHttpFunction from "@/functions/utils/rcdaHttpFunction";
 import ChatPromptReportRequest from "@common/models/services/chat-prompt-report/ChatPromptReportRequest";
-import ChatMessageService from "@/services/ChatPromptReportService";
+import ChatPromptReportService from "@/services/ChatPromptReportService";
 import ChatPromptRequest from "@common/models/services/chat-prompt/ChatPromptRequest";
-import RcdaRoles from "@common/system/RcdaRoles";
+import { RcdaRoles } from "@common/system/RcdaRoles";
 
 class ChatPromptFunctionDependencies {
 
-  constructor(public chatMessageService: ChatMessageService) {}
+  constructor(public chatPromptReportService: ChatPromptReportService) {}
 
   static getInstance() {
-    return new ChatPromptFunctionDependencies(ChatMessageService.getInstance())
+    return new ChatPromptFunctionDependencies(ChatPromptReportService.getInstance())
   }
 }
 
 export default rcdaHttpFunction<ChatPromptReportRequest, void, ChatPromptFunctionDependencies>(
   ChatPromptFunctionDependencies.getInstance,
   [RcdaRoles.DashboardAdmin],
-  async (req, { chatMessageService }, { context }) => {
+  async (req, { chatPromptReportService }, { context }) => {
 
     let bindings = <{queueItems: ChatPromptRequest[]}>context.bindings;
 
-    bindings.queueItems = await chatMessageService.getChatPromptQueueItems(req.body);
+    bindings.queueItems = await chatPromptReportService.getChatPromptQueueItems(req.body);
 
     return { 
       status: HttpStatusCode.Accepted,

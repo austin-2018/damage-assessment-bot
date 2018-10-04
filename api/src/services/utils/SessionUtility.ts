@@ -3,7 +3,7 @@ import UserSession from "@common/models/resources/UserSession";
 import UserModel from "@common/models/resources/UserModel";
 import DateUtility from "@/services/utils/DateUtility";
 import RcdaAuthorizationPolicy from "@common/system/RcdaAuthorizationPolicy";
-import RcdaRoles from "@common/system/RcdaAuthorizationPolicy";
+import { RcdaRoles } from "@common/system/RcdaRoles";
 
 export default class SessionUtility {
     constructor(private jwt: typeof jsonwebtoken, private dateUtility: DateUtility) {}
@@ -56,7 +56,7 @@ export default class SessionUtility {
         if (authPolicy === null) {
             return true;
         }
-        
+
         if (authPolicy.requiredRoles.length > 0 && !session || !session.roles) {
             return false;
         }
