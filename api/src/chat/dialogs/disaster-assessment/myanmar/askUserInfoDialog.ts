@@ -21,7 +21,7 @@ export const askUserInfoDialog = rcdaChatDialog(
         },
         ({ session, result, skip }) => {
             session.conversationData.adminStack = result.response;
-            Prompts.choice(session, "Setting?", ...geographicalSetting , { listStyle: ListStyle.button });
+            Prompts.choice(session, "Setting?", geographicalSetting , { listStyle: ListStyle.button });
         },
         ({ session, result, skip }) => {
             session.conversationData.setting = result.response;
